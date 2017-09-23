@@ -2,10 +2,18 @@ vpc terraform module
 ===========
 
 A terraform module to create AWS Config rules to check for unused accounts and keys.
+As result you will get two rules for AWS config:
+
+* account with password wasn't used at all since creation or more than 90 days
+
+* access keys wasn't used more than 90 days
+
+Example of result:
+![Screenshot1](https://raw.githubusercontent.com/nitrogear/terraform/master/assets/screenshot1.png)
 
 Pre-requisites
 ----------------------
-1. You need to have AWS Config configure. Just open the [link](https://eu-central-1.console.aws.amazon.com/config/home) below and follow Getting started instructions:
+1. You need to have AWS Config configure. Just open the [link](https://console.aws.amazon.com/config/home) below and follow Getting started instructions:
 
 2. Zip Python files to archives iam-inactive-user.zip and iam-unused-keys.zip respectively
 
