@@ -1,3 +1,15 @@
+data "archive_file" "iam-unused-keys_zip" {
+  type        = "zip"
+  source_file = "${path.module}/${var.unused-keys-path}"
+  output_path = "${var.unused-keys-path}.zip"
+}
+
+data "archive_file" "iam-inactive-user_zip" {
+  type        = "zip"
+  source_file = "${path.module}/${var.inactive-user-path}"
+  output_path = "${var.inactive-user-path}.zip"
+}
+
 resource "aws_iam_role" "iam_for_lambda" {
   path = "/service-role/"
   name = "${var.naming_prefix}-lambda-rules-executor"
@@ -29,7 +41,9 @@ resource "aws_iam_role_policy" "iam_role_policy_for_lambda" {
     {
       "Effect": "Allow",
       "Action": [
-        "iam:*"
+        "iam:GetUser",
+        "iam:ListAccessKeys",
+        "iam:GetAccessKeyLastUsed"
       ],
       "Resource": "*"
     },
@@ -62,8 +76,8 @@ resource "aws_lambda_function" "iam-inactive-user" {
   role             = "${aws_iam_role.iam_for_lambda.arn}"
   handler          = "iam-inactive-user.lambda_handler"
   runtime          = "python2.7"
-  filename         = "${path.module}/${var.inactive-user-path}"
-  source_code_hash = "${base64sha256(file("${path.module}/${var.inactive-user-path}"))}"
+  filename         = "${data.archive_file.iam-inactive-user_zip.output_path}"
+  source_code_hash = "${data.archive_file.iam-inactive-user_zip.output_base64sha256}"
   description      = "terraform iam-inactive-user"
 }
 
@@ -72,8 +86,8 @@ resource "aws_lambda_function" "iam-unused-keys" {
   role             = "${aws_iam_role.iam_for_lambda.arn}"
   handler          = "iam-unused-keys.lambda_handler"
   runtime          = "python2.7"
-  filename         = "${path.module}/${var.unused-keys-path}"
-  source_code_hash = "${base64sha256(file("${path.module}/${var.unused-keys-path}"))}"
+  filename         = "${data.archive_file.iam-unused-keys_zip.output_path}"
+  source_code_hash = "${data.archive_file.iam-unused-keys_zip.output_base64sha256}"
   description      = "terraform iam-unused-keys"
 }
 

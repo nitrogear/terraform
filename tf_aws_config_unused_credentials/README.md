@@ -32,8 +32,8 @@ module "rules-unused-credentials" {
   modname   = "tf_aws_config_unused_credentials"
   aws_account = "<AWS Account ID>"
   delivery_channel_s3_bucket_name = "<S3 bucket for AWS Config>"
-  inactive-user-path = "iam-inactive-user.zip"
-  unused-keys-path = "iam-unused-keys.zip"
+  inactive-user-path = "iam-inactive-user.py"
+  unused-keys-path = "iam-unused-keys.py"
 }
 ```
 
